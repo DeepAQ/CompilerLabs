@@ -18,10 +18,12 @@ public class Main {
         try {
             IDGen id = new IDGen();
             NFAState nfa = NFA.merge(Arrays.asList(
-                    NFA.fromRE("op1", RE.parse("+|-|\\*|/"), id),
-                    NFA.fromRE("op2", RE.parse("++|--"), id),
-                    NFA.fromRE("op3", RE.parse("+=|-=|\\*=|/="), id),
-                    NFA.fromRE("number", RE.parse("(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)*"), id)
+                    NFA.fromRE("letter", RE.parse("[A-Za-z]"), id),
+                    NFA.fromRE("delim", RE.parse(";"), id),
+                    NFA.fromRE("op1", RE.parse("\\+|-|\\*|/|="), id),
+                    NFA.fromRE("op2", RE.parse("\\+\\+|--"), id),
+                    NFA.fromRE("op3", RE.parse("\\+=|-=|\\*=|/="), id),
+                    NFA.fromRE("number", RE.parse("[0-9]+"), id)
             ), id);
             DFAState dfa = DFA.fromNFA(nfa);
             Analyzer.analyze("abc +== -345; i += 123; j++; k = i * j / k;", dfa);

@@ -4,6 +4,7 @@ import cn.imaq.lex.dfa.DFAState;
 
 public class Analyzer {
     public static void analyze(String target, DFAState dfa) {
+        target = target.trim() + ' ';
         StringBuilder current = new StringBuilder();
         DFAState state = dfa;
         for (char c : target.toCharArray()) {
