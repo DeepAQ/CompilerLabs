@@ -17,9 +17,9 @@ public class Main {
         try {
             IDGen id = new IDGen();
             NFAState nfa = NFA.merge(Arrays.asList(
-                    NFA.fromRE("op1", RE.parse("+|-"), id),
+                    NFA.fromRE("op1", RE.parse("+|-|\\*|/"), id),
                     NFA.fromRE("op2", RE.parse("++|--"), id),
-                    NFA.fromRE("op3", RE.parse("+=|-="), id)
+                    NFA.fromRE("op3", RE.parse("+=|-=|\\*=|/="), id)
             ), id);
             DFAState dfa = DFA.fromNFA(nfa);
         } catch (LexException e) {

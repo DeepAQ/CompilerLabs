@@ -47,20 +47,20 @@ public class DFA {
                 }
                 state.next.put(entry.getKey(), nextState);
             }
-            // DEBUG
-            if (Debug.debug) {
-                for (int j = 0; j < states.size(); j++) {
-                    System.out.print("DFAState[" + j + "]: " + Arrays.toString(states.get(j).nfaStates.stream().map(s -> s.id).toArray()) + " ");
-                    for (Character nextChar : states.get(j).next.keySet()) {
-                        System.out.print(nextChar + " -> " + states.get(j).next.get(nextChar).id + ", ");
-                    }
-                    if (states.get(j).tag != null) {
-                        System.out.print("[" + states.get(j).tag + "]");
-                    }
-                    System.out.println();
+        }
+        // DEBUG
+        if (Debug.debug) {
+            for (int j = 0; j < states.size(); j++) {
+                System.out.print("DFAState[" + j + "]: " + Arrays.toString(states.get(j).nfaStates.stream().map(s -> s.id).toArray()) + " ");
+                for (Character nextChar : states.get(j).next.keySet()) {
+                    System.out.print(nextChar + " -> " + states.get(j).next.get(nextChar).id + ", ");
+                }
+                if (states.get(j).tag != null) {
+                    System.out.print("[" + states.get(j).tag + "]");
                 }
                 System.out.println();
             }
+            System.out.println();
         }
         return states.get(0);
     }

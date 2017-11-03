@@ -24,8 +24,7 @@ public class NFA {
         NFAState lastBlockFrom = null;
         NFAState blockStart = root;
         NFAState ptr = root;
-        for (int i = 0; i < reNodes.size(); i++) {
-            RENode node = reNodes.get(i);
+        for (RENode node : reNodes) {
             if (node.type == RENode.Type.OP) {
                 switch (node.ch) {
                     case '(':
@@ -86,17 +85,17 @@ public class NFA {
                 lastBlockFrom = ptr;
                 ptr = newState;
             }
-            // DEBUG
-            if (Debug.debug) {
-                for (int j = 0; j < states.size(); j++) {
-                    System.out.print("NFAState[" + (j + idOffset) + "]: ");
-                    for (Character nextChar : states.get(j).next.keySet()) {
-                        System.out.print(nextChar + " -> " + Arrays.toString(states.get(j).next.get(nextChar).stream().map(s -> s.id).toArray()) + ", ");
-                    }
-                    System.out.println();
+        }
+        // DEBUG
+        if (Debug.debug) {
+            for (int j = 0; j < states.size(); j++) {
+                System.out.print("NFAState[" + (j + idOffset) + "]: ");
+                for (Character nextChar : states.get(j).next.keySet()) {
+                    System.out.print(nextChar + " -> " + Arrays.toString(states.get(j).next.get(nextChar).stream().map(s -> s.id).toArray()) + ", ");
                 }
                 System.out.println();
             }
+            System.out.println();
         }
         ptr.tag = tag;
         return root;
