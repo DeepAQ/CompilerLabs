@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class NFAState {
     public int id;
+    public String tag;
     public MultiMap<Character, NFAState> next;
 
     NFAState(int id) {

@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Stack;
 
 public class NFA {
-    public static NFABlock fromRE(List<RENode> reNodes) throws LexException {
+    public static NFAState fromRE(String tag, List<RENode> reNodes, IDGen id) throws LexException {
         // Init
-        IDGen id = new IDGen();
+        int idOffset = id.get();
         Stack<Character> opStack = new Stack<>();
         Stack<NFAState> stateStack = new Stack<>();
         // Construct root
@@ -56,11 +56,11 @@ public class NFA {
                         }
                         NFAState copyState = new NFAState(id.next());
                         states.add(copyState);
-                        for (int j = 0; j < lastBlockFrom.id; j++) {
-                            for (Character ch : states.get(j).next.keySet()) {
-                                if (states.get(j).next.get(ch).contains(lastBlockFrom)) {
-                                    states.get(j).next.delete(ch, lastBlockFrom);
-                                    states.get(j).next.add(ch, copyState);
+                        for (int j = idOffset; j < lastBlockFrom.id; j++) {
+                            for (Character ch : states.get(j - idOffset).next.keySet()) {
+                                if (states.get(j - idOffset).next.get(ch).contains(lastBlockFrom)) {
+                                    states.get(j - idOffset).next.delete(ch, lastBlockFrom);
+                                    states.get(j - idOffset).next.add(ch, copyState);
                                 }
                             }
                         }
@@ -81,7 +81,7 @@ public class NFA {
                 }
             } else {
                 NFAState newState = new NFAState(id.next());
-                states.add(newState.id, newState);
+                states.add(newState);
                 ptr.next.add(node.ch, newState);
                 lastBlockFrom = ptr;
                 ptr = newState;
@@ -89,7 +89,7 @@ public class NFA {
             // DEBUG
             if (Debug.debug) {
                 for (int j = 0; j < states.size(); j++) {
-                    System.out.print("NFAState[" + j + "]: ");
+                    System.out.print("NFAState[" + (j + idOffset) + "]: ");
                     for (Character nextChar : states.get(j).next.keySet()) {
                         System.out.print(nextChar + " -> " + Arrays.toString(states.get(j).next.get(nextChar).stream().map(s -> s.id).toArray()) + ", ");
                     }
@@ -98,6 +98,18 @@ public class NFA {
                 System.out.println();
             }
         }
-        return new NFABlock(root, ptr);
+        ptr.tag = tag;
+        return root;
+    }
+
+    public static NFAState merge(List<NFAState> nfas, IDGen id) {
+        if (nfas.size() == 1) {
+            return nfas.get(0);
+        }
+        NFAState merged = new NFAState(id.next());
+        for (NFAState nfa : nfas) {
+            merged.next.add(null, nfa);
+        }
+        return merged;
     }
 }

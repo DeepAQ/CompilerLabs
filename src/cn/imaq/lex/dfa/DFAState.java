@@ -8,23 +8,17 @@ import java.util.Set;
 
 public class DFAState {
     int id = -1;
-    boolean accept = false;
+    String tag;
     Set<NFAState> nfaStates;
     Map<Character, DFAState> next = new HashMap<>();
 
-    public DFAState(Set<NFAState> nfaStates) {
+    DFAState(Set<NFAState> nfaStates) {
         this.nfaStates = nfaStates;
     }
 
-    public DFAState(int id, Set<NFAState> nfaStates) {
+    DFAState(int id, Set<NFAState> nfaStates) {
         this.id = id;
         this.nfaStates = nfaStates;
-    }
-
-    public DFAState(int id, Set<NFAState> nfaStates, boolean accept) {
-        this.id = id;
-        this.nfaStates = nfaStates;
-        this.accept = accept;
     }
 
     @Override
@@ -46,7 +40,7 @@ public class DFAState {
     public String toString() {
         return "DFAState{" +
                 "id=" + id +
-                ", accept=" + accept +
+                ", tag=" + tag +
                 ", nfaStates=" + nfaStates +
                 '}';
     }

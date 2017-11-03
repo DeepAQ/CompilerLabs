@@ -1,18 +1,18 @@
 package cn.imaq.lex.dfa;
 
-import cn.imaq.lex.nfa.NFABlock;
 import cn.imaq.lex.nfa.NFAState;
 import cn.imaq.lex.util.Debug;
 import cn.imaq.lex.util.IDGen;
+import cn.imaq.lex.util.LexException;
 
 import java.util.*;
 
 public class DFA {
-    public static DFAState fromNFA(NFABlock nfa) {
+    public static DFAState fromNFA(NFAState nfa) throws LexException {
         IDGen id = new IDGen();
         List<DFAState> states = new ArrayList<>();
         // Add I_0
-        states.add(new DFAState(id.next(), nfa.start.ec()));
+        states.add(new DFAState(id.next(), nfa.ec()));
         for (int i = 0; i < states.size(); i++) {
             DFAState state = states.get(i);
             Map<Character, Set<NFAState>> moves = new HashMap<>();
@@ -36,7 +36,12 @@ public class DFA {
                 } else {
                     nextState.id = id.next();
                     for (NFAState nfaState : entry.getValue()) {
-                        nextState.accept = nextState.accept || nfaState.equals(nfa.end);
+                        if (nfaState.tag != null) {
+                            if (nextState.tag != null) {
+                                throw new LexException("NFA2DFA: Ambigious accepting states found");
+                            }
+                            nextState.tag = nfaState.tag;
+                        }
                     }
                     states.add(nextState);
                 }
@@ -49,8 +54,8 @@ public class DFA {
                     for (Character nextChar : states.get(j).next.keySet()) {
                         System.out.print(nextChar + " -> " + states.get(j).next.get(nextChar).id + ", ");
                     }
-                    if (states.get(j).accept) {
-                        System.out.print("[Accept]");
+                    if (states.get(j).tag != null) {
+                        System.out.print("[" + states.get(j).tag + "]");
                     }
                     System.out.println();
                 }
