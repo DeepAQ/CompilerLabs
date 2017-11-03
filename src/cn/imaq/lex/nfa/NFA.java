@@ -1,14 +1,17 @@
 package cn.imaq.lex.nfa;
 
-import cn.imaq.lex.re.RE;
 import cn.imaq.lex.re.RENode;
+import cn.imaq.lex.util.Debug;
 import cn.imaq.lex.util.IDGen;
 import cn.imaq.lex.util.LexException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 public class NFA {
-    public static NFABlock parseRE(List<RENode> reNodes) throws LexException {
+    public static NFABlock fromRE(List<RENode> reNodes) throws LexException {
         // Init
         IDGen id = new IDGen();
         Stack<Character> opStack = new Stack<>();
@@ -64,6 +67,9 @@ public class NFA {
                         if (blockStart == lastBlockFrom) {
                             blockStart = copyState;
                         }
+                        if (root == lastBlockFrom) {
+                            root = copyState;
+                        }
                         copyState.next.add(null, lastBlockFrom);
                         ptr.next.add(null, copyState);
                         // Add a null state
@@ -81,24 +87,17 @@ public class NFA {
                 ptr = newState;
             }
             // DEBUG
-            for (int j = 0; j < states.size(); j++) {
-                System.out.print("State[" + j + "]: ");
-                for (Character nextChar : states.get(j).next.keySet()) {
-                    System.out.print(nextChar + " -> " + Arrays.toString(states.get(j).next.get(nextChar).stream().map(s -> s.id).toArray()) + ", ");
+            if (Debug.debug) {
+                for (int j = 0; j < states.size(); j++) {
+                    System.out.print("NFAState[" + j + "]: ");
+                    for (Character nextChar : states.get(j).next.keySet()) {
+                        System.out.print(nextChar + " -> " + Arrays.toString(states.get(j).next.get(nextChar).stream().map(s -> s.id).toArray()) + ", ");
+                    }
+                    System.out.println();
                 }
                 System.out.println();
             }
-            System.out.println();
         }
         return new NFABlock(root, ptr);
-    }
-
-    public static void main(String[] args) {
-//        NFA.fromRE("a(a|b)*(c|d)*b");
-        try {
-            NFA.parseRE(RE.parse("aa*((bab*a)*(a|b)b*)*"));
-        } catch (LexException e) {
-            e.printStackTrace();
-        }
     }
 }
