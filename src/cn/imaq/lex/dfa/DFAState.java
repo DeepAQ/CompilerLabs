@@ -8,9 +8,9 @@ import java.util.Set;
 
 public class DFAState {
     int id = -1;
-    String tag;
+    public String tag;
     Set<NFAState> nfaStates;
-    Map<Character, DFAState> next = new HashMap<>();
+    public Map<Character, DFAState> next = new HashMap<>();
 
     DFAState(Set<NFAState> nfaStates) {
         this.nfaStates = nfaStates;
