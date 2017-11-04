@@ -4,9 +4,10 @@ import cn.imaq.lex.util.LexException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RE {
-    public static List<RENode> parse(String re) throws LexException {
+    public static List<RENode> parse(String re, Map<String, List<RENode>> reMap) throws LexException {
         List<RENode> result = new ArrayList<>();
         result.add(new RENode(RENode.Type.OP, '('));
         boolean escape = false;
@@ -32,7 +33,7 @@ public class RE {
                         char start = re.charAt(i);
                         i++;
                         if (re.charAt(i) != '-') {
-                            throw new LexException("RE Parsing: Illegal character class");
+                            throw new LexException("RE Parsing: Illegal character class at pos " + i);
                         }
                         i++;
                         char end = re.charAt(i);
@@ -44,6 +45,19 @@ public class RE {
                     }
                     result.remove(result.size() - 1);
                     result.add(new RENode(RENode.Type.OP, ')'));
+                    break;
+                case '{':
+                    int index = re.indexOf('}', i);
+                    if (index < 0 || re.charAt(index - 1) == '\\') {
+                        throw new LexException("RE Parsing: Illegal reference at pos " + i);
+                    }
+                    String refName = re.substring(i + 1, index);
+                    if (reMap != null && reMap.containsKey(refName)) {
+                        result.addAll(reMap.get(refName));
+                        i = index;
+                    } else {
+                        throw new LexException("RE Parsing: Can not find reference \"" + refName + "\" at pos " + i);
+                    }
                     break;
                 case '+':
                     RENode last = result.get(result.size() - 1);
@@ -67,7 +81,7 @@ public class RE {
                             }
                         }
                     } else {
-                        throw new LexException("RE Parsing: Illegal usage of \"+\"");
+                        throw new LexException("RE Parsing: Illegal usage of \"+\" at pos " + i);
                     }
                     break;
                 case '\\':
@@ -79,5 +93,9 @@ public class RE {
         }
         result.add(new RENode(RENode.Type.OP, ')'));
         return result;
+    }
+
+    public static List<RENode> parse(String re) throws LexException {
+        return parse(re, null);
     }
 }

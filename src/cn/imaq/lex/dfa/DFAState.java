@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class DFAState {
-    int id = -1;
+    public int id = -1;
     public String tag;
     Set<NFAState> nfaStates;
     public Map<Character, DFAState> next = new HashMap<>();

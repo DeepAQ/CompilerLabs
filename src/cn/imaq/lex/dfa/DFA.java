@@ -8,7 +8,7 @@ import cn.imaq.lex.util.LexException;
 import java.util.*;
 
 public class DFA {
-    public static DFAState fromNFA(NFAState nfa) throws LexException {
+    public static List<DFAState> fromNFA(NFAState nfa) throws LexException {
         IDGen id = new IDGen();
         List<DFAState> states = new ArrayList<>();
         // Add I_0
@@ -38,9 +38,10 @@ public class DFA {
                     for (NFAState nfaState : entry.getValue()) {
                         if (nfaState.tag != null) {
                             if (nextState.tag != null) {
-                                throw new LexException("NFA2DFA: Ambigious accepting states found");
+                                System.out.println("[Warning] NFA2DFA: Ambigious accepting states found: " + nextState.tag);
+                            } else {
+                                nextState.tag = nfaState.tag;
                             }
-                            nextState.tag = nfaState.tag;
                         }
                     }
                     states.add(nextState);
@@ -62,6 +63,6 @@ public class DFA {
             }
             System.out.println();
         }
-        return states.get(0);
+        return states;
     }
 }

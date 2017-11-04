@@ -1,0 +1,76 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class /*CLASSNAME*/ {
+    private static List<Map<Character, Integer>> finalDFA = new ArrayList<>();
+    private static List<Integer> dfaTags = new ArrayList<>();
+
+    public static void main(String[] args) throws IOException {
+        if (args.length == 0) {
+            System.out.println("No input file given");
+            System.exit(0);
+        }
+        FileInputStream is = new FileInputStream(args[0]);
+        byte[] buf = new byte[is.available()];
+        is.read(buf);
+        is.close();
+        String target = new String(buf).trim() + ' ';
+        StringBuilder current = new StringBuilder();
+        int state = 0;
+        for (char c : target.toCharArray()) {
+            if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+                if (current.length() > 0) {
+                    if (dfaTags.get(state) != null) {
+                        handleMatch(dfaTags.get(state), current.toString());
+                    } else {
+                        System.out.println("[Warning] Could not recogize \"" + current + "\" as any tag");
+                    }
+                    state = 0;
+                    current = new StringBuilder();
+                }
+                continue;
+            }
+            if (finalDFA.get(state).containsKey(c)) {
+                current.append(c);
+                state = finalDFA.get(state).get(c);
+            } else {
+                if (dfaTags.get(state) != null) {
+                    handleMatch(dfaTags.get(state), current.toString());
+                }
+                state = 0;
+                current = new StringBuilder();
+                if (finalDFA.get(state).containsKey(c)) {
+                    state = finalDFA.get(state).get(c);
+                    current.append(c);
+                } else {
+                    System.out.println("[Warning] Could not recogize \"" + c + "\" as any tag");
+                }
+            }
+        }
+    }
+
+    private static void addDFA(int tag, Object... params) {
+        Map<Character, Integer> tempMap = new HashMap<>();
+        for (int i = 0; i < params.length / 2; i++) {
+            char ch = (char) params[i * 2];
+            int next = (int) params[i * 2 + 1];
+            tempMap.put(ch, next);
+        }
+        finalDFA.add(tempMap);
+        dfaTags.add(tag);
+    }
+
+// Generated code
+private static void handleMatch(int tag, String match) {
+switch (tag) {
+/*SWITCHTAG*/
+};
+}
+/*ADDDFAS*/
+
+}
