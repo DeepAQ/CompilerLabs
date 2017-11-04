@@ -18,15 +18,15 @@ public class Main {
         try {
             IDGen id = new IDGen();
             NFAState nfa = NFA.merge(Arrays.asList(
-                    NFA.fromRE("letter", RE.parse("[A-Za-z]"), id),
-                    NFA.fromRE("delim", RE.parse(";"), id),
+                    NFA.fromRE("id", RE.parse("[A-Za-z]([A-Za-z]|[0-9])*"), id),
+                    NFA.fromRE("delim", RE.parse(";|\\{|\\}"), id),
                     NFA.fromRE("op1", RE.parse("\\+|-|\\*|/|="), id),
                     NFA.fromRE("op2", RE.parse("\\+\\+|--"), id),
                     NFA.fromRE("op3", RE.parse("\\+=|-=|\\*=|/="), id),
                     NFA.fromRE("number", RE.parse("[0-9]+"), id)
             ), id);
             DFAState dfa = DFA.fromNFA(nfa);
-            Analyzer.analyze("abc +== -345; i += 123; j++; k = i * j / k;", dfa);
+            Analyzer.analyze("{abc+==-345;i+=123;j++; k=i*j/k;}", dfa);
         } catch (LexException e) {
             e.printStackTrace();
         }

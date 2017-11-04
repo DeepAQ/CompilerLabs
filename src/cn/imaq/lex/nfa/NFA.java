@@ -49,6 +49,12 @@ public class NFA {
                         stateStack.push(ptr);
                         ptr = blockStart;
                         break;
+                    case '?':
+                        if (lastBlockFrom == null) {
+                            throw new LexException("RE to NFA: \"?\" does not follow a block");
+                        }
+                        lastBlockFrom.next.add(null, ptr);
+                        break;
                     case '*':
                         if (lastBlockFrom == null) {
                             throw new LexException("RE to NFA: \"*\" does not follow a block");
@@ -86,6 +92,7 @@ public class NFA {
                 ptr = newState;
             }
         }
+        ptr.tag = tag;
         // DEBUG
         if (Debug.debug) {
             for (int j = 0; j < states.size(); j++) {
@@ -93,11 +100,13 @@ public class NFA {
                 for (Character nextChar : states.get(j).next.keySet()) {
                     System.out.print(nextChar + " -> " + Arrays.toString(states.get(j).next.get(nextChar).stream().map(s -> s.id).toArray()) + ", ");
                 }
+                if (states.get(j).tag != null) {
+                    System.out.print("[" + states.get(j).tag + "]");
+                }
                 System.out.println();
             }
             System.out.println();
         }
-        ptr.tag = tag;
         return root;
     }
 

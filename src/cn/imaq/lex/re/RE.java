@@ -22,6 +22,7 @@ public class RE {
                 case ')':
                 case '|':
                 case '*':
+                case '?':
                     result.add(new RENode(RENode.Type.OP, c));
                     break;
                 case '[':
