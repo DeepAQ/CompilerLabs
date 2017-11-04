@@ -10,9 +10,15 @@ abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolea
 {digit}+.*{digit}* {
     System.out.println("[Number] " + match);
 }
-\+|-|\*|/|%|~|!|\+\+|--|<<|>>|>>>|<|>|<=|>=|==|!=|&|^|\||&&|\|\||?|:|=|\+=|-=|\*=|/=|%=|&=|^=|\|=|<<=|>>=|>>>=|. {
+"(\\.|.)*" {
+    System.out.println("[String] " + match);
+}
+\+|-|\*|/|%|~|!|\+\+|--|<<|>>|>>>|<|>|<=|>=|==|!=|&|^|\||&&|\|\||?|:|=|\+=|-=|\*=|/=|%=|&=|^=|\|=|<<=|>>=|>>>=|\. {
     System.out.println("[Operator] " + match);
 }
 ;|\{|\}|\(|\)|\[|\]|"|, {
     System.out.println("[Delimiter] " + match);
+}
+//.*\n {
+    System.out.println("[Comment] " + match);
 }

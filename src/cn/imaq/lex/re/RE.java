@@ -15,7 +15,11 @@ public class RE {
             char c = re.charAt(i);
             if (escape) {
                 escape = false;
-                result.add(new RENode(RENode.Type.CH, c));
+                if (c == 'n') {
+                    result.add(new RENode(RENode.Type.CH, '\n'));
+                } else {
+                    result.add(new RENode(RENode.Type.CH, c));
+                }
                 continue;
             }
             switch (c) {
@@ -86,6 +90,9 @@ public class RE {
                     break;
                 case '\\':
                     escape = true;
+                    break;
+                case '.':
+                    result.add(new RENode(RENode.Type.CH, (char) 0));
                     break;
                 default:
                     result.add(new RENode(RENode.Type.CH, c));

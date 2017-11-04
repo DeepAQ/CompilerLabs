@@ -21,16 +21,12 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
 //        Debug.debug = true;
-        String inputFile;
         if (args.length == 0) {
             System.out.println("Usage: lex [*.l]");
-            inputFile = "java.l";
-            // System.exit(0);
-        } else {
-            inputFile = args[0];
+            System.exit(0);
         }
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedReader reader = new BufferedReader(new FileReader(args[0]));
             Map<String, List<RENode>> reNameMap = new HashMap<>();
             List<List<RENode>> reList = new ArrayList<>();
             List<String> codeList = new ArrayList<>();
@@ -113,7 +109,7 @@ public class Main {
                     sb.append(dfaStates.get(i).tag);
                 }
                 for (Map.Entry<Character, DFAState> entry : dfaStates.get(i).next.entrySet()) {
-                    sb.append(",'").append(entry.getKey()).append("',").append(entry.getValue().id);
+                    sb.append(",").append(((int) entry.getKey())).append(",").append(entry.getValue().id);
                 }
                 sb.append(");}\r\n");
             }
@@ -137,6 +133,8 @@ public class Main {
             FileOutputStream os = new FileOutputStream(className + ".java");
             os.write(template.getBytes());
             os.close();
+
+            System.out.println("Successfully generated " + className + ".java");
         } catch (Exception e) {
             e.printStackTrace();
         }

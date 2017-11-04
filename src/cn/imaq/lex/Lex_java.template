@@ -23,7 +23,13 @@ public class /*CLASSNAME*/ {
         StringBuilder current = new StringBuilder();
         int state = 0;
         for (char c : target.toCharArray()) {
-            if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+            if (finalDFA.get(state).containsKey(c)) {
+                current.append(c);
+                state = finalDFA.get(state).get(c);
+            } else if (finalDFA.get(state).containsKey((char) 0)) {
+                current.append(c);
+                state = finalDFA.get(state).get((char) 0);
+            } else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
                 if (current.length() > 0) {
                     if (dfaTags.get(state) != null) {
                         handleMatch(dfaTags.get(state), current.toString());
@@ -34,10 +40,6 @@ public class /*CLASSNAME*/ {
                     current = new StringBuilder();
                 }
                 continue;
-            }
-            if (finalDFA.get(state).containsKey(c)) {
-                current.append(c);
-                state = finalDFA.get(state).get(c);
             } else {
                 if (dfaTags.get(state) != null) {
                     handleMatch(dfaTags.get(state), current.toString());
@@ -57,7 +59,7 @@ public class /*CLASSNAME*/ {
     private static void addDFA(int tag, Object... params) {
         Map<Character, Integer> tempMap = new HashMap<>();
         for (int i = 0; i < params.length / 2; i++) {
-            char ch = (char) params[i * 2];
+            char ch = (char) ((int) params[i * 2]);
             int next = (int) params[i * 2 + 1];
             tempMap.put(ch, next);
         }
