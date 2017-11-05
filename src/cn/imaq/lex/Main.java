@@ -101,17 +101,27 @@ public class Main {
             String template = new String(buf);
 
             StringBuilder sb = new StringBuilder();
+            Map<String, Integer> paramsMap = new HashMap<>();
+            Map<Integer, Integer> addDFAMap = new HashMap<>();
             for (int i = 0; i < dfaStates.size(); i++) {
-                sb.append("private static void addDFA").append(i).append("(){addDFA(");
-                sb.append(dfaStates.get(i).tag);
+                StringBuilder params = new StringBuilder();
+                params.append(dfaStates.get(i).tag);
                 for (Map.Entry<Character, DFAState> entry : dfaStates.get(i).next.entrySet()) {
-                    sb.append(",").append(((int) entry.getKey())).append(",").append(entry.getValue().id);
+                    params.append(",").append(((int) entry.getKey())).append(",").append(entry.getValue().id);
                 }
-                sb.append(");}\r\n");
+                Integer mIndex = paramsMap.get(params.toString());
+                if (mIndex == null) {
+                    paramsMap.put(params.toString(), i);
+                    mIndex = i;
+                    sb.append("private static void addDFA").append(i).append("(){addDFA(");
+                    sb.append(params);
+                    sb.append(");}\r\n");
+                }
+                addDFAMap.put(i, mIndex);
             }
             sb.append("static{\r\n");
             for (int i = 0; i < dfaStates.size(); i++) {
-                sb.append("addDFA").append(i).append("();\r\n");
+                sb.append("addDFA").append(addDFAMap.get(i)).append("();\r\n");
             }
             sb.append("}\r\n");
             template = template.replace("/*ADDDFAS*/", sb.toString());

@@ -1,0 +1,57 @@
+[Keyword] public
+[Keyword] class
+[Identifier] Test
+[Delimiter] {
+[JavaDoc] /**
+     * Main method.
+     * @param args
+     */
+[Keyword] public
+[Keyword] static
+[Keyword] void
+[Identifier] main
+[Delimiter] (
+[Identifier] String
+[Delimiter] [
+[Delimiter] ]
+[Identifier] args
+[Delimiter] )
+[Delimiter] {
+[Keyword] int
+[Identifier] i
+[Operator] =
+[Hex] 0xFFFF
+[Delimiter] ;
+[Keyword] long
+[Identifier] l
+[Operator] =
+[Operator] -
+[Number] 356L
+[Delimiter] ;
+[Keyword] float
+[Identifier] f
+[Operator] =
+[Number] 1.23f
+[Delimiter] ;
+[Keyword] double
+[Identifier] d
+[Operator] =
+[Number] 4.56d
+[Delimiter] ;
+[Comment] // test comment
+[Identifier] System
+[Operator] .
+[Identifier] out
+[Operator] .
+[Identifier] println
+[Delimiter] (
+[String] "\"Hello World!\""
+[Delimiter] )
+[Delimiter] ;
+[Comment] /*
+        test
+        multiline
+        comment
+         */
+[Delimiter] }
+[Delimiter] }
