@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class NFA {
-    public static NFAState fromRE(String tag, List<RENode> reNodes, IDGen id) throws LexException {
+    public static NFAState fromRE(int tag, List<RENode> reNodes, IDGen id) throws LexException {
         // Init
         int idOffset = id.get();
         Stack<Character> opStack = new Stack<>();
@@ -100,8 +100,8 @@ public class NFA {
                 for (Character nextChar : states.get(j).next.keySet()) {
                     System.out.print(nextChar + " -> " + Arrays.toString(states.get(j).next.get(nextChar).stream().map(s -> s.id).toArray()) + ", ");
                 }
-                if (states.get(j).tag != null) {
-                    System.out.print("[" + states.get(j).tag + "]");
+                if (states.get(j).tag >= 0) {
+                    System.out.print("[tag=" + states.get(j).tag + "]");
                 }
                 System.out.println();
             }

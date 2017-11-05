@@ -22,7 +22,7 @@ public class Main {
     public static void main(String[] args) {
 //        Debug.debug = true;
         if (args.length == 0) {
-            System.out.println("Usage: lex [*.l]");
+            System.out.println("Usage: java cn.imaq.lex.Main [InputFile.l] [LexerClassName]");
             System.exit(0);
         }
         try {
@@ -89,7 +89,7 @@ public class Main {
             IDGen id = new IDGen();
             List<NFAState> nfaList = new ArrayList<>();
             for (int i = 0; i < reList.size(); i++) {
-                nfaList.add(NFA.fromRE(String.valueOf(i), reList.get(i), id));
+                nfaList.add(NFA.fromRE(i, reList.get(i), id));
             }
             List<DFAState> dfaStates = DFA.fromNFA(NFA.merge(nfaList, id));
 
@@ -103,11 +103,7 @@ public class Main {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < dfaStates.size(); i++) {
                 sb.append("private static void addDFA").append(i).append("(){addDFA(");
-                if (dfaStates.get(i).tag == null) {
-                    sb.append("-1");
-                } else {
-                    sb.append(dfaStates.get(i).tag);
-                }
+                sb.append(dfaStates.get(i).tag);
                 for (Map.Entry<Character, DFAState> entry : dfaStates.get(i).next.entrySet()) {
                     sb.append(",").append(((int) entry.getKey())).append(",").append(entry.getValue().id);
                 }
@@ -127,6 +123,9 @@ public class Main {
             template = template.replace("/*SWITCHTAG*/", sb.toString());
 
             String className = "Lexer" + System.currentTimeMillis();
+            if (args.length >= 2) {
+                className = args[1];
+            }
             template = template.replace("/*CLASSNAME*/", className);
 
             // Write to file

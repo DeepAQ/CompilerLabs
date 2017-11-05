@@ -15,10 +15,18 @@ public class RE {
             char c = re.charAt(i);
             if (escape) {
                 escape = false;
-                if (c == 'n') {
-                    result.add(new RENode(RENode.Type.CH, '\n'));
-                } else {
-                    result.add(new RENode(RENode.Type.CH, c));
+                switch (c) {
+                    case 'n':
+                        result.add(new RENode(RENode.Type.CH, '\n'));
+                        break;
+                    case 'r':
+                        result.add(new RENode(RENode.Type.CH, '\r'));
+                        break;
+                    case 't':
+                        result.add(new RENode(RENode.Type.CH, '\t'));
+                        break;
+                    default:
+                        result.add(new RENode(RENode.Type.CH, c));
                 }
                 continue;
             }

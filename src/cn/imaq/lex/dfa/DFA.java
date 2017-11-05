@@ -36,12 +36,8 @@ public class DFA {
                 } else {
                     nextState.id = id.next();
                     for (NFAState nfaState : entry.getValue()) {
-                        if (nfaState.tag != null) {
-                            if (nextState.tag != null) {
-                                System.out.println("[Warning] NFA2DFA: Ambigious accepting states found: " + nextState.tag);
-                            } else {
-                                nextState.tag = nfaState.tag;
-                            }
+                        if (nfaState.tag >= 0 && nextState.tag < nfaState.tag) {
+                            nextState.tag = nfaState.tag;
                         }
                     }
                     states.add(nextState);
@@ -56,8 +52,8 @@ public class DFA {
                 for (Character nextChar : states.get(j).next.keySet()) {
                     System.out.print(nextChar + " -> " + states.get(j).next.get(nextChar).id + ", ");
                 }
-                if (states.get(j).tag != null) {
-                    System.out.print("[" + states.get(j).tag + "]");
+                if (states.get(j).tag >= 0) {
+                    System.out.print("[tag=" + states.get(j).tag + "]");
                 }
                 System.out.println();
             }
