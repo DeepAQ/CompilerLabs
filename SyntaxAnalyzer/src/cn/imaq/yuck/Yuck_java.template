@@ -1,0 +1,84 @@
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class /*CLASSNAME*/ {
+    private static String[][] productions;
+    private static List<Map<String, Integer>> table = new ArrayList<>();
+
+    public static void main(String[] args) throws IOException {
+        if (args.length == 0) {
+            System.out.println("Usage: java LexerDemo [InputFile]");
+            System.exit(0);
+        }
+        FileInputStream is = new FileInputStream(args[0]);
+        byte[] buf = new byte[is.available()];
+        is.read(buf);
+        is.close();
+        String[] tokens = new String(buf).trim().split(" ");
+
+        Stack<StackItem> stack = new Stack<>();
+        stack.push(new StackItem(null, 0));
+        int state = 0, tokenPos = 0;
+        while (true) {
+            String token = null;
+            if (tokenPos < tokens.length) {
+                token = tokens[tokenPos];
+            }
+            Integer action = table.get(state).get(token);
+            if (action == null) {
+                System.err.println("[Error] rejected, state=" + state + ", token=" + token);
+                break;
+            }
+            if (action > 0) { // Shift
+                stack.push(new StackItem(token, action));
+                state = action;
+                tokenPos++;
+            } else {
+                System.out.println(productions[-action][0] + " -> " + Arrays.stream(productions[-action]).skip(1).collect(Collectors.joining(" ")));
+                if (action == 0) {
+                    System.out.println("Accepted!");
+                    break;
+                }
+                for (int i = 0; i < productions[-action].length - 1; i++) {
+                    stack.pop();
+                }
+                state = stack.peek().state;
+                String left = productions[-action][0];
+                action = table.get(state).get(left);
+                if (action == null || action <= 0) {
+                    System.err.println("[Error] cannot find goto, state=" + state + ", token=" + token);
+                    break;
+                }
+                stack.push(new StackItem(left, action));
+                state = action;
+            }
+        }
+    }
+
+    private static void addState(Object... params) {
+        Map<String, Integer> actions = new HashMap<>();
+        for (int i = 0; i < params.length / 2; i++) {
+            actions.put(params[i * 2] == null ? null : (String) params[i * 2], (Integer) params[i * 2 + 1]);
+        }
+        table.add(actions);
+    }
+
+    static {
+        productions = new String[][]{
+/*PRODUCTIONS*/
+        };
+/*STATES*/
+    }
+
+    private static class StackItem {
+        String token;
+        int state;
+
+        StackItem(String token, int state) {
+            this.token = token;
+            this.state = state;
+        }
+    }
+}

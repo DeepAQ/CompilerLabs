@@ -1,0 +1,18 @@
+F -> id
+T -> F
+E -> T
+F -> id
+T -> F
+E -> T
+F -> id
+T -> F
+E -> E - T
+F -> ( E )
+T -> F
+F -> id
+T -> T * F
+F -> id
+T -> T / F
+E -> E + T
+E' -> E
+Accepted!
